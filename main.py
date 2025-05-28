@@ -12,7 +12,10 @@ EXIT_KEYWORD = "exit"
 
 # CSS selectors
 USER_PROFILE_BUTTON = "button[class*=\"dzen-layout--avatar__isButton\"]"
-VIDEO_PLAYER = "[class*=\"player__videoViewerPlayer\"]"
+VIDEO_PLAYER = "video"
+
+# JS selectors
+JS_VIDEO_URL_EXTRACT = "window?.YandexZen?.VideoPlayerBundle?.videoPlayersManager?.players?.[0]?.convertedStreams?.MPEG?.['Invariant quality']"
 
 print("Opening " + URL + "...")
 
@@ -50,15 +53,23 @@ while True:
     url = user_input
     driver.get(url)
 
-    print("Waiting for video page to load...")
+    print("Waiting for video page to load (You may need to focus on the browser window)...")
 
-    # wait till opens
+    # wait till page opens
     WebDriverWait(driver, 300).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, VIDEO_PLAYER))
     )
 
-# # Once the selector is found, it will grab the `id` attribute and print it
-# text_input = element.get_attribute("id")
-# print(text_input)
+    download_url = driver.execute_script('''
+        const url = {JS_VIDEO_URL_EXTRACT} ?? null;
+        console.log('URL!', url);
+        return url;
+    '''.format(JS_VIDEO_URL_EXTRACT=JS_VIDEO_URL_EXTRACT))
 
-# window.YandexZen.VideoPlayerBundle.videoPlayersManager.players[0].convertedStreams.MPEG['Invariant quality']
+    if not download_url:
+        print("Can't retrieve video download url. Skipping...")
+        continue
+
+    print("Download url:")
+    print(download_url)
+
