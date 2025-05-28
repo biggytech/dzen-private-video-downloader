@@ -1,22 +1,26 @@
-# import webbrowser
-# import sys
-#
-URL = 'https://dzen.ru/'
-#
-# if not webbrowser.open(URL, new=2):
-#     print("Couldn't open browser window. Exiting...")
-#     sys.exit()
-
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import pickle
+import os.path
+
+# Constants
+URL = 'https://dzen.ru/'
+COOKIES_FILE = "cookies.pkl"
 
 print("Opening " + URL + "...")
 
 # This will open chrome browser
 driver = webdriver.Chrome()
 driver.get(URL)
+
+# Load saved cookies
+if os.path.isfile(COOKIES_FILE):
+    cookies = pickle.load(open(COOKIES_FILE, "rb"))
+    for cookie in cookies:
+        driver.add_cookie(cookie)
+    driver.get(URL)
 
 print("Please, authenticate in " + URL + " for further work")
 print("Waiting for user authentication...")
@@ -27,6 +31,9 @@ user_profile_button = WebDriverWait(driver, 300).until(
 )
 
 print("User successfully authenticated!")
+
+# Store browser cookies
+pickle.dump( driver.get_cookies() , open(COOKIES_FILE,"wb"))
 
 # # Once the selector is found, it will grab the `id` attribute and print it
 # text_input = element.get_attribute("id")
