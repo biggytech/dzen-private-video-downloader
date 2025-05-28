@@ -13,6 +13,7 @@ EXIT_KEYWORD = "exit"
 # CSS selectors
 USER_PROFILE_BUTTON = "button[class*=\"dzen-layout--avatar__isButton\"]"
 VIDEO_PLAYER = "video"
+VIDEO_TITLE = "[class*=\"video-header__title\"]"
 
 # JS selectors
 JS_VIDEO_URL_EXTRACT = "window?.YandexZen?.VideoPlayerBundle?.videoPlayersManager?.players?.[0]?.convertedStreams?.MPEG?.['Invariant quality']"
@@ -60,6 +61,11 @@ while True:
         EC.presence_of_element_located((By.CSS_SELECTOR, VIDEO_PLAYER))
     )
 
+    title_element = WebDriverWait(driver, 300).until(
+        EC.presence_of_element_located((By.CSS_SELECTOR, VIDEO_TITLE))
+    )
+    title = title_element.text
+
     download_url = driver.execute_script('''
         const url = {JS_VIDEO_URL_EXTRACT} ?? null;
         console.log('URL!', url);
@@ -70,6 +76,6 @@ while True:
         print("Can't retrieve video download url. Skipping...")
         continue
 
-    print("Download url:")
-    print(download_url)
+    print("Title: " + title)
+    print("Download url: " + download_url)
 
