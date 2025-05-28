@@ -9,7 +9,6 @@ import os.path
 URL = 'https://dzen.ru/'
 COOKIES_FILE = "cookies.pkl"
 EXIT_KEYWORD = "exit"
-FILE_EXTENSTION = "mp4"
 
 # CSS selectors
 USER_PROFILE_BUTTON = "button[class*=\"dzen-layout--avatar__isButton\"]"
@@ -79,8 +78,6 @@ while True:
 
     print("Title: " + title)
     print("Download url: " + download_url)
-
-    file_name = title + "." + FILE_EXTENSTION
 
     print("Download started (in the browser)...")
 
